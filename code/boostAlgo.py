@@ -19,4 +19,7 @@ if __name__ == "__main__" :
 		# A. Label it according to our algorithm
 		# B. Compare the labels, add to the error count if it fails
 
-	# 7. Spit out the number for t and a fraction of error count / email count
+	# 7. Spit out the number for t and a fraction of error count / email count for our personal gains
+	# 8. load the dictionary into a vector
+	# 9. for each tuple in our list
+		# A. spit out the element of the vector in that spot
