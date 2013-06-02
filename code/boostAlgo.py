@@ -1,5 +1,20 @@
+#!/c/python27/python
+
+trainingList = []
+
 def boosting():
-	
+	yield
+'''
+This method opens the training file, and then
+parses each line to a vector, creating a list
+of vectors.
+'''
+def readFile(filename):
+	with open(filename, 'r') as openFile:
+		for line in openFile:
+			global trainingList
+			trainingList.append(map(int, line.split()))
+
 
 '''
 This method is our weak classifier, essentially:
@@ -7,7 +22,7 @@ Return 1 if the word occurs in the email
 Else return -1
 '''
 def classifier(value):
-	return 1 if value == 1 else return -1
+	return 1 if (value == 1) else -1
 
 '''
 Since our classifiers are complements of each other,
