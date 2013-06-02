@@ -29,8 +29,8 @@ Since our classifiers are complements of each other,
 we want to flip the error and labels if the error is 
 higher than 0.5
 '''
-def errorCheck(probabilityTuple):
-	if probabilityTuple[0] > 0.5:
-		probabilityTuple[0] = 1.0 - probabilityTuple[0]
-		probabilityTuple[1] = -1
+def errorCheck(probability, label):
+	if probability > 0.5:
+		probability = 1.0 - probability
+		label = -1 * label
 	return probabilityTuple
