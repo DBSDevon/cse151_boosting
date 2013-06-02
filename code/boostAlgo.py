@@ -1,7 +1,7 @@
 #!/c/python27/python
 import math
 
-weights
+weights = []
 trainingList = []
 
 '''
@@ -47,34 +47,38 @@ def boosting():
 	label = 0
 
 	#2. For each feature in a data point
-	for ( i in range(0, weights.length-1) ) :
+	for i in range(0, len(weights)-1):
 		# A. calculate the total error via evaluating each datapoint
 		error = calculateError(i)
 		# B. If the total error is less than previous best error, then replace the current error with this and the current feature record
-		if (error < totalError) :
+		if (error < bestError) :
 			bestFeature = i
 			bestError = error
 			label = 1
 		# should have another check here for the inverse
-		elif ( 1.0 - error < totalError ) :
+		elif ( 1.0 - error < bestError ) :
 			bestFeature = i
 			bestError = 1.0 - error
 			label = -1
 	
 	#3. change the weights
-	alpha = 0.5 * math.log( (1.0-bestError) / bestError )
+	try:
+		alpha = 0.5 * math.log( ((1.0-bestError) / bestError) )
+	except ValueError:
+		print bestError
+		exit(1)
 
-	for ( i in range(0, weights.length - 1) :
-		y = trainingList.at(i)[-1]
+	for i in range(0, len(weights) - 1):
+		y = trainingList[i][-1]
 		ep = math.exp(-alpha*y*label)
-		weights.at(i) = weights.at(i)*ep
+		weights[i] = weights[i] * ep
 
 	#4. get the normalization factor
 	sum = 0.0
-	for ( d in weights ) :
+	for d in weights:
 		sum += d
 
-	for ( d in weights ) :
+	for d in weights:
 		d = d / sum
 
 	return (bestFeature, label, alpha)
@@ -87,11 +91,11 @@ def calculateError (feature) :
 	totalError = 0.0
 
 	#1. for each email (data element)
-	for ( i in range(0, trainingList-1) ) :
+	for i in range(0, len(trainingList)-1):
 		# if the feature != the label, increment error
-		email = trainingList.at(i)
-		if ( email[feature] != email[-1] ) :
-			totalError+=weights.at(i)
+		email = trainingList[i]
+		if email[feature] != email[-1]:
+			totalError+=weights[i]
 
 	#2. Return it
 	return totalError
@@ -99,19 +103,21 @@ def calculateError (feature) :
 
 if __name__ == "__main__" :
 	# 1. read in the training file
+	readFile("..\data\hw6train.txt")
+
 	# 2. create any persistent structures
 	# List of tuples (feature number, h1 or h0 type)
 	fhTuples = []
 
 	# global Vector of weights
 	global weights
-	weights = [1]*1
+	weights = [1.0/len(trainingList)] * len(trainingList)
 	
 	# 3. for t loops:
-	for (t in range(0, 1)) :
+	for t in range(0, 1):
 		# A. Run our boost algorithm (returns a tuple for our list and the new weights)
 		# B. Add the resulting tuple to our list
-		fhTuples.add(boosting())
+		fhTuples.append(boosting())
 
 	# 4. Read the test file
 	# 5. Create a variable for the total error and the total number of emails
