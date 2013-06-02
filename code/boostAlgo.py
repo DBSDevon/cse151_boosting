@@ -16,11 +16,28 @@ def boosting():
 		if (error < totalError) :
 			bestFeature = i
 			totalError = error
-
+		# should have another check here for the inverse
 	#3. Get the error information
 	
 	#4. change the weights
-	
+
+'''
+this gives the h1 evaluation of the feature
+'''
+def calculateError (feature) :
+	#0. Terms
+	totalError = 0.0
+
+	#1. for each email (data element)
+	for ( email in trainingList ) :
+		# if the feature != the label, increment error
+		if ( email[feature] != email[-1] ) :
+			totalError++
+	#2. Divide the total error by the size
+	totalError = totalError / float (email.length)
+
+	#3. Return it
+	return totalError
 
 
 if __name__ == "__main__" :
