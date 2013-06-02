@@ -1,3 +1,5 @@
+import math
+
 weights
 '''
 with the global dataset and global weights
@@ -6,20 +8,41 @@ def boosting():
 	#1. Declare the global dataset and weight, but they have been previously initialized
 	global weights
 	bestFeature = -1
-	totalError = 100.0
+	bestError = 100.0
+	label = 0
 
 	#2. For each feature in a data point
-	for ( i in range(0, weights.length) ) :
+	for ( i in range(0, weights.length-1) ) :
 		# A. calculate the total error via evaluating each datapoint
-		error = 0.0
+		error = calculateError(i)
 		# B. If the total error is less than previous best error, then replace the current error with this and the current feature record
 		if (error < totalError) :
 			bestFeature = i
-			totalError = error
+			bestError = error
+			label = 1
 		# should have another check here for the inverse
-	#3. Get the error information
+		elif ( 1.0 - error < totalError ) :
+			bestFeature = i
+			bestError = 1.0 - error
+			label = -1
 	
-	#4. change the weights
+	#3. change the weights
+	alpha = 0.5 * math.log( (1.0-bestError) / bestError )
+
+	for ( i in range(0, weights.length - 1) :
+		y = trainingList.at(i)[-1]
+		ep = math.exp(-alpha*y*label)
+		weights.at(i) = weights.at(i)*ep
+
+	#4. get the normalization factor
+	sum = 0.0
+	for ( d in weights ) :
+		sum += d
+
+	for ( d in weights ) :
+		d = d / sum
+
+	return (bestFeature, label, alpha)
 
 '''
 this gives the h1 evaluation of the feature
@@ -29,14 +52,13 @@ def calculateError (feature) :
 	totalError = 0.0
 
 	#1. for each email (data element)
-	for ( email in trainingList ) :
+	for ( i in range(0, trainingList-1) ) :
 		# if the feature != the label, increment error
+		email = trainingList.at(i)
 		if ( email[feature] != email[-1] ) :
-			totalError++
-	#2. Divide the total error by the size
-	totalError = totalError / float (email.length)
+			totalError+=weights.at(i)
 
-	#3. Return it
+	#2. Return it
 	return totalError
 
 
@@ -48,11 +70,14 @@ if __name__ == "__main__" :
 
 	# global Vector of weights
 	global weights
+	weights = [1]*1
 	
 	# 3. for t loops:
+	for (t in range(0, 1)) :
 		# A. Run our boost algorithm (returns a tuple for our list and the new weights)
 		# B. Add the resulting tuple to our list
-		# C. Replace our current vector of weights with the new vector
+		fhTuples.add(boosting())
+
 	# 4. Read the test file
 	# 5. Create a variable for the total error and the total number of emails
 	# 6. For each email in the test file
