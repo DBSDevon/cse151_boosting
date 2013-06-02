@@ -44,7 +44,11 @@ if __name__ == "__main__" :
 	# 1. read in the training file
 	# 2. create any persistent structures
 	# List of tuples (feature number, h1 or h0 type)
+	fhTuples = []
+
 	# global Vector of weights
+	global weights
+	
 	# 3. for t loops:
 		# A. Run our boost algorithm (returns a tuple for our list and the new weights)
 		# B. Add the resulting tuple to our list
