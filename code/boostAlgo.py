@@ -48,7 +48,7 @@ def boosting():
 	label = 0
 
 	#2. For each feature in a data point
-	for i in range(0, len(weights)-1):
+	for i in range(0, len(weights)):
 		# A. calculate the total error via evaluating each datapoint
 		error = calculateError(i)
 		# B. If the total error is less than previous best error, then replace the current error with this and the current feature record
@@ -69,7 +69,7 @@ def boosting():
 		print bestError
 		exit(1)
 
-	for i in range(0, len(weights) - 1):
+	for i in range(0, len(weights)):
 		y = dataList[i][-1]
 		ep = math.exp(-alpha*y*label)
 		weights[i] = weights[i] * ep
@@ -79,8 +79,8 @@ def boosting():
 	for d in weights:
 		sum += d
 
-	for d in weights:
-		d = d / sum
+	for d in range(0, len(weights)):
+		weights[d] = weights[d] / sum
 
 	return (bestFeature, label, alpha)
 
@@ -92,10 +92,10 @@ def calculateError (feature) :
 	totalError = 0.0
 
 	#1. for each email (data element)
-	for i in range(0, len(dataList)-1):
+	for i in range(0, len(dataList)):
 		# if the feature != the label, increment error
 		email = dataList[i]
-		if email[feature] != email[-1]:
+		if classifier(email[feature]) != email[-1]:
 			totalError+=weights[i]
 
 	#2. Return it
@@ -131,13 +131,15 @@ if __name__ == "__main__" :
 	weights = [1.0/len(dataList)] * len(dataList)
 	
 	# 3. for t loops:
-	for t in range(0, 1):
+	for t in range(0, 2):
 		# A. Run our boost algorithm (returns a tuple for our list and the new weights)
 		# B. Add the resulting tuple to our list
 		fhTuples.append(boosting())
+		print fhTuples
 
 	#Calcuate training error by calling classifier on all the training data
 	errorCount = 0
+	print "HI!"
 
 	for t in dataList:
 		currLabel = calculateLabel(t, fhTuples)
