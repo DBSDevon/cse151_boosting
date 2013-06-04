@@ -52,7 +52,7 @@ def boosting():
 	label = 0
 
 	#2. For each feature in a data point
-	for i in range(0, len(weights)):
+	for i in range(0, len(dataList[0])-1):
 		# A. calculate the total error via evaluating each datapoint
 		error = calculateError(i)
 		# B. If the total error is less than previous best error, then replace the current error with this and the current feature record
@@ -144,8 +144,6 @@ if __name__ == "__main__" :
 		# A. Run our boost algorithm (returns a tuple for our list and the new weights)
 		# B. Add the resulting tuple to our list
 		fhTuples.append(boosting())
-		print fhTuples
-
 	#Calcuate training error by calling classifier on all the training data
 	errorCount = 0
 
@@ -154,31 +152,6 @@ if __name__ == "__main__" :
 		if currLabel != t[-1]:
 			errorCount += 1
 	print "Training error:", (errorCount / float (len(dataList)) )
-
-	feature1 = -1
-	feature2 = -1
-	brHits1 = 0
-	brHits2 = 0
-	for i in range(0, len(dataList[0])-1):
-		#1. For all datapoints, get the number of matches
-		hits = 0
-		for t in dataList:	
-			if t[i] == t[-1]:
-				hits += 1
-		
-		#2. If it's greater than max, switch things out
-		if hits > brHits1:
-			brHits2 = brHits1
-			feature2 = feature1
-			
-			brHits1 = hits
-			feature1 = i
-		elif hits > brHits2:
-			brHits2 = hits
-			feature2 = i
-			
-	print "Highest: ", feature1, " with ", brHits1, " hits"
-	print "Second Highest: ", feature2, " with ", brHits2, " hits"
 
 	# 4. Read the test file
 	readFile("..\data\hw6test.txt")
