@@ -96,6 +96,7 @@ def calculateError (feature) :
 		# if the feature != the label, increment error
 		email = dataList[i]
 		if classifier(email[feature]) != email[-1]:
+			print classifier(email[feature])
 			totalError+=weights[i]
 
 	#2. Return it
