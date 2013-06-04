@@ -25,6 +25,10 @@ Else return -1
 def classifier(value):
 	return 1 if (value == 1) else -1
 
+def classifierNeg(value):
+	return 1 if (value == 0) else -1
+
+
 '''
 Since our classifiers are complements of each other,
 we want to flip the error and labels if the error is 
@@ -66,12 +70,17 @@ def boosting():
 	try:
 		alpha = 0.5 * math.log( ((1.0-bestError) / bestError) )
 	except ValueError:
-		print bestError
+		print "Alpha calculate crash with value of", bestError
 		exit(1)
 
 	for i in range(0, len(weights)):
 		y = dataList[i][-1]
-		ep = math.exp(-alpha*y*label)
+		tempLab = 0
+		if label == 1:
+			tempLab = classifier(dataList[i][bestFeature])
+		else:
+			tempLab = classifierNeg(dataList[i][bestFeature])
+		ep = math.exp(-alpha*y*tempLab)
 		weights[i] = weights[i] * ep
 
 	#4. get the normalization factor
@@ -96,7 +105,6 @@ def calculateError (feature) :
 		# if the feature != the label, increment error
 		email = dataList[i]
 		if classifier(email[feature]) != email[-1]:
-			print classifier(email[feature])
 			totalError+=weights[i]
 
 	#2. Return it
@@ -140,7 +148,6 @@ if __name__ == "__main__" :
 
 	#Calcuate training error by calling classifier on all the training data
 	errorCount = 0
-	print "HI!"
 
 	for t in dataList:
 		currLabel = calculateLabel(t, fhTuples)
