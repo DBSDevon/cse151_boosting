@@ -2,7 +2,7 @@
 import math
 
 weights = []
-trainingList = []
+dataList = []
 
 '''
 This method opens the training file, and then
@@ -12,8 +12,8 @@ of vectors.
 def readFile(filename):
 	with open(filename, 'r') as openFile:
 		for line in openFile:
-			global trainingList
-			trainingList.append(map(int, line.split()))
+			global dataList
+			dataList.append(map(int, line.split()))
 
 
 '''
@@ -69,7 +69,7 @@ def boosting():
 		exit(1)
 
 	for i in range(0, len(weights) - 1):
-		y = trainingList[i][-1]
+		y = dataList[i][-1]
 		ep = math.exp(-alpha*y*label)
 		weights[i] = weights[i] * ep
 
@@ -91,14 +91,30 @@ def calculateError (feature) :
 	totalError = 0.0
 
 	#1. for each email (data element)
-	for i in range(0, len(trainingList)-1):
+	for i in range(0, len(dataList)-1):
 		# if the feature != the label, increment error
-		email = trainingList[i]
+		email = dataList[i]
 		if email[feature] != email[-1]:
 			totalError+=weights[i]
 
 	#2. Return it
 	return totalError
+
+
+def calculateLabel(featureVector, learnerList):
+	summation = 0
+	for boostLearn in learnerList:
+		if boostLearn[1] == 1:
+			if featureVector[boostLearn[0]] == 1:
+				summation += boostLearn[2]
+			else:
+				summation -= boostLearn[2]
+		else:
+			if featureVector[boostLearn[0]] == 0:
+				summation += boostLearn[2]
+			else:
+				summation -= boostLearn[2]
+	return (summation / math.fabs(summation))
 
 
 if __name__ == "__main__" :
@@ -111,7 +127,7 @@ if __name__ == "__main__" :
 
 	# global Vector of weights
 	global weights
-	weights = [1.0/len(trainingList)] * len(trainingList)
+	weights = [1.0/len(dataList)] * len(dataList)
 	
 	# 3. for t loops:
 	for t in range(0, 1):
@@ -119,8 +135,30 @@ if __name__ == "__main__" :
 		# B. Add the resulting tuple to our list
 		fhTuples.append(boosting())
 
+	#Calcuate training error by calling classifier on all the training data
+	errorCount = 0
+
+	for t in dataList:
+		currLabel = calculateLabel(t, fhTuples)
+		if currLabel != t[-1]:
+			errorCount += 1
+	print "Training error:", (errorCount / float (len(dataList)) )
+
 	# 4. Read the test file
+	readFile("..\data\hw6test.txt")
+	
+	errorCount = 0
+
+	for t in dataList:
+		currLabel = calculateLabel(t, fhTuples)
+		if currLabel != t[-1]:
+			errorCount += 1
+	print "Test error:", (errorCount / float (len(dataList)) )
+
+
 	# 5. Create a variable for the total error and the total number of emails
+
+
 	# 6. For each email in the test file
 		# A. Label it according to our algorithm
 		# B. Compare the labels, add to the error count if it fails
