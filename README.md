@@ -26,3 +26,5 @@ in the ﬁrst 10 rounds of boosting.
 
 [Hint: If your code is correct, you should get a training error of 0.1140 and a test error of 0.09 after two
 rounds of boosting.]
+
+Note: minor change made to test SSH connection to Bitbucket.
