@@ -10,9 +10,10 @@ parses each line to a vector, creating a list
 of vectors.
 '''
 def readFile(filename):
+	global dataList
+	dataList = []
 	with open(filename, 'r') as openFile:
 		for line in openFile:
-			global dataList
 			dataList.append(map(int, line.split()))
 
 
