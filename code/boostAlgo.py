@@ -126,44 +126,62 @@ def calculateLabel(featureVector, learnerList):
 				summation -= boostLearn[2]
 	return (summation / math.fabs(summation))
 
+def readDictionary(tupleSet):
+	dictionaryList = []
+	with open("..\data\hw6dictionary.txt", 'r') as dictFile:
+		for line in dictFile:
+			dictionaryList.append(line.split()[0])
+	for element in tupleSet:
+		if element[1] == 1:
+			print "Word in not-spam:", dictionaryList[element[0]]
+		else:
+			print "Word in spam:", dictionaryList[element[0]]
 
 if __name__ == "__main__" :
-	# 1. read in the training file
-	readFile("..\data\hw6train.txt")
-
-	# 2. create any persistent structures
-	# List of tuples (feature number, h1 or h0 type)
 	fhTuples = []
+	boostingSet = [3, 7, 10, 15, 20]
+	for boostRound in boostingSet:
+		# 0. Which Round is it?
+		print "\nNumber of Boosting iterations:", boostRound
 
-	# global Vector of weights
-	global weights
-	weights = [1.0/len(dataList)] * len(dataList)
-	
-	# 3. for t loops:
-	for t in range(0, 2):
-		# A. Run our boost algorithm (returns a tuple for our list and the new weights)
-		# B. Add the resulting tuple to our list
-		fhTuples.append(boosting())
-	#Calcuate training error by calling classifier on all the training data
-	errorCount = 0
+		# 1. read in the training file
+		readFile("..\data\hw6train.txt")
 
-	for t in dataList:
-		currLabel = calculateLabel(t, fhTuples)
-		if currLabel != t[-1]:
-			errorCount += 1
-	print "Training error:", (errorCount / float (len(dataList)) )
+		# 2. create any persistent structures
+		# List of tuples (feature number, h1 or h0 type)
+		fhTuples = []
 
-	# 4. Read the test file
-	readFile("..\data\hw6test.txt")
-	
-	errorCount = 0
+		# global Vector of weights
+		global weights
+		weights = [1.0/len(dataList)] * len(dataList)
+		
+		# 3. for t loops:
+		for t in range(0, boostRound):
+			# A. Run our boost algorithm (returns a tuple for our list and the new weights)
+			# B. Add the resulting tuple to our list
+			fhTuples.append(boosting())
+		#Calcuate training error by calling classifier on all the training data
+		errorCount = 0
 
-	for t in dataList:
-		currLabel = calculateLabel(t, fhTuples)
-		if currLabel != t[-1]:
-			errorCount += 1
-	print "Test error:", (errorCount / float (len(dataList)) )
+		for t in dataList:
+			currLabel = calculateLabel(t, fhTuples)
+			if currLabel != t[-1]:
+				errorCount += 1
+		print "Training error:", (errorCount / float (len(dataList)) )
 
+		# 4. Read the test file
+		readFile("..\data\hw6test.txt")
+		
+		errorCount = 0
+
+		for t in dataList:
+			currLabel = calculateLabel(t, fhTuples)
+			if currLabel != t[-1]:
+				errorCount += 1
+		print "Test error:", (errorCount / float (len(dataList)) )
+
+		if boostRound >= 10:
+			readDictionary(fhTuples)
 
 	# 5. Create a variable for the total error and the total number of emails
 
